@@ -1,0 +1,81 @@
+### Registrar usuario
+POST http://localhost:3001/auth/register
+Content-Type: application/json
+
+{
+  "email": "usuario@ejemplo.com",
+  "password": "password123",
+  "firstName": "Juan",
+  "lastName": "Pérez"
+}
+
+### Iniciar sesión
+POST http://localhost:3001/auth/login
+Content-Type: application/json
+
+{
+  "email": "usuario@ejemplo.com",
+  "password": "password123"
+}
+
+### Obtener perfil (requiere token)
+GET http://localhost:3001/users/profile
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+### Crear categoría (requiere token)
+POST http://localhost:3001/categories
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+{
+  "name": "Alimentación",
+  "description": "Gastos en comida y bebida",
+  "color": "#ff6b6b"
+}
+
+### Listar categorías (requiere token)
+GET http://localhost:3001/categories
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+### Crear gasto (requiere token)
+POST http://localhost:3001/expenses
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+{
+  "title": "Compra en supermercado",
+  "description": "Compra semanal de alimentos",
+  "amount": 150.75,
+  "date": "2024-01-15",
+  "categoryId": 1
+}
+
+### Listar gastos (requiere token)
+GET http://localhost:3001/expenses
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+### Listar gastos por rango de fechas (requiere token)
+GET http://localhost:3001/expenses?startDate=2024-01-01&endDate=2024-01-31
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+### Listar gastos por categoría (requiere token)
+GET http://localhost:3001/expenses?categoryId=1
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+### Obtener estadísticas mensuales (requiere token)
+GET http://localhost:3001/expenses/stats/monthly/2024/1
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+### Actualizar gasto (requiere token)
+PATCH http://localhost:3001/expenses/1
+Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+{
+  "title": "Compra en supermercado actualizada",
+  "amount": 175.50
+}
+
+### Eliminar gasto (requiere token)
+DELETE http://localhost:3001/expenses/1
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
