@@ -171,25 +171,4 @@ La aplicación usa JWT (JSON Web Tokens) para la autenticación:
 1. Compilar: `npm run build`
 2. Servir archivos estáticos desde `dist/`
 
-## 🤝 Contribución
 
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
-
-## 📄 Licencia
-
-Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para detalles.
-
-## 📞 Soporte
-
-Si tienes alguna pregunta o problema:
-- Abre un issue en GitHub
-- Revisa la documentación de la API en `/api`
-- Consulta los logs de la aplicación
-
----
-
-**¡Disfruta gestionando tus gastos de
