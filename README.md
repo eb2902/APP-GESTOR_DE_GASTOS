@@ -1,174 +1,94 @@
-# 💰 Gestor de Gastos - Aplicación Full Stack
+# APP-GESTOR_DE_GASTOS
 
-Una aplicación completa para gestionar gastos personales desarrollada con **NestJS** (backend) y **React + Material-UI** (frontend).
+Este proyecto es una aplicación de gestión de gastos personales, que consta de una API de backend construida con NestJS y una interfaz de usuario de frontend construida con React.
 
-## 🚀 Características
+## Tabla de Contenidos
 
-### Backend (NestJS)
-- ✅ API REST completa con autenticación JWT
-- ✅ Base de datos SQLite con TypeORM
-- ✅ CRUD para usuarios, categorías y gastos
-- ✅ Filtros avanzados y estadísticas
-- ✅ Documentación automática con Swagger
-- ✅ Validación de datos y manejo de errores
+*   [Características](#características)
+*   [Tecnologías Utilizadas](#tecnologías-utilizadas)
+*   [Primeros Pasos](#primeros-pasos)
+    *   [Prerrequisitos](#prerrequisitos)
+    *   [Instalación](#instalación)
+    *   [Ejecutando la Aplicación](#ejecutando-la-aplicación)
+*   [Endpoints de la API](#endpoints-de-la-api)
+*   [Base de Datos](#base-de-datos)
 
-### Frontend (React + MUI)
-- ✅ Interfaz moderna con Material-UI
-- ✅ Autenticación completa (login/registro)
-- ✅ Dashboard con estadísticas visuales
-- ✅ Gestión de gastos con filtros
-- ✅ Gestión de categorías con colores
-- ✅ Diseño responsive y navegación intuitiva
+## Características
 
-## 🛠 Tecnologías
+*   Autenticación de Usuarios (Registro, Inicio de Sesión)
+*   Gestión de Gastos (Añadir, Ver, Actualizar, Eliminar)
+*   Gestión de Categorías para Gastos (Añadir, Ver, Actualizar, Eliminar)
+*   Panel de control para una visión general de los gastos
+
+## Tecnologías Utilizadas
 
 ### Backend
-- **NestJS** - Framework de Node.js
-- **TypeORM** - ORM para base de datos
-- **SQLite** - Base de datos
-- **JWT** - Autenticación
-- **Swagger** - Documentación API
-- **Class Validator** - Validación de datos
+
+*   **Framework**: NestJS
+*   **Lenguaje**: TypeScript
+*   **Base de Datos**: SQLite
+*   **ORM**: TypeORM (probable, dado NestJS y las entidades)
+*   **Autenticación**: JWT (JSON Web Tokens)
 
 ### Frontend
-- **React 18** - Librería de UI
-- **Material-UI (MUI)** - Componentes de diseño
-- **React Router** - Navegación
-- **Axios** - Cliente HTTP
-- **TypeScript** - Tipado estático
-- **Vite** - Build tool
 
-## 📦 Instalación y Configuración
+*   **Framework**: React
+*   **Herramienta de Construcción**: Vite
+*   **Lenguaje**: TypeScript
+*   **Estilos**: CSS
+*   **Gestión de Estado**: React Context API (AuthContext)
+*   **Enrutamiento**: React Router (probable, dadas las carpetas `pages` y `Layout.tsx`)
+
+## Primeros Pasos
+
+Sigue estas instrucciones para obtener una copia del proyecto en funcionamiento en tu máquina local para propósitos de desarrollo y pruebas.
 
 ### Prerrequisitos
-- Node.js 18+ 
-- npm o yarn
 
-### 1. Clonar el repositorio
-```bash
-git clone <repository-url>
-cd APP-GESTOR_DE_GASTOS
-```
+*   Node.js (se recomienda la versión LTS)
+*   npm o yarn
 
-### 2. Configurar el Backend
-```bash
-cd backend
-npm install
-cp .env.example .env  # Configurar variables de entorno
-npm run start:dev     # Ejecutar en modo desarrollo
-```
+### Instalación
 
-El backend estará disponible en: `http://localhost:3001`
-Documentación Swagger: `http://localhost:3001/api`
+1.  **Clona el repositorio:**
+    ```bash
+    git clone https://github.com/your-username/APP-GESTOR_DE_GASTOS.git
+    cd APP-GESTOR_DE_GASTOS
+    ```
 
-### 3. Configurar el Frontend
-```bash
-cd frontend
-npm install
-npm run dev          # Ejecutar en modo desarrollo
-```
+2.  **Configuración del Backend:**
+    ```bash
+    cd backend
+    npm install # o yarn install
+    ```
 
-El frontend estará disponible en: `http://localhost:5173`
+3.  **Configuración del Frontend:**
+    ```bash
+    cd ../frontend
+    npm install # o yarn install
+    ```
 
-## 🎯 Uso de la Aplicación
+### Ejecutando la Aplicación
 
-### 1. Registro e Inicio de Sesión
-- Accede a `http://localhost:5173`
-- Regístrate con tu email y datos personales
-- O inicia sesión si ya tienes cuenta
+1.  **Ejecuta el Backend:**
+    ```bash
+    cd backend
+    npm run start:dev # o yarn start:dev
+    ```
+    La API del backend se ejecutará típicamente en `http://localhost:3000`.
 
-### 2. Dashboard
-- Visualiza estadísticas de tus gastos
-- Ve el total general y del mes actual
-- Revisa tus gastos más recientes
+2.  **Ejecuta el Frontend:**
+    ```bash
+    cd ../frontend
+    npm run dev # o yarn dev
+    ```
+    La aplicación de frontend se ejecutará típicamente en `http://localhost:5173` (o en otro puerto si el 5173 está en uso).
 
-### 3. Gestión de Categorías
-- Crea categorías para organizar tus gastos
-- Asigna colores personalizados
-- Edita o elimina categorías existentes
+## Endpoints de la API
 
-### 4. Gestión de Gastos
-- Registra nuevos gastos con título, monto y fecha
-- Asigna categorías a tus gastos
-- Filtra gastos por fecha o categoría
-- Edita o elimina gastos existentes
+El backend proporciona endpoints de API RESTful para gestionar usuarios, autenticación, categorías y gastos.
+(Puedes encontrar más detalles sobre los endpoints específicos examinando los archivos del controlador en `backend/src/`.)
 
-## 🔧 Scripts Disponibles
+## Base de Datos
 
-### Backend
-```bash
-npm run start:dev    # Desarrollo con hot reload
-npm run start:prod   # Producción
-npm run build        # Compilar
-npm run test         # Ejecutar tests
-```
-
-### Frontend
-```bash
-npm run dev          # Desarrollo con hot reload
-npm run build        # Compilar para producción
-npm run preview      # Vista previa de producción
-npm run lint         # Linter
-```
-
-## 📡 API Endpoints
-
-### Autenticación
-- `POST /auth/register` - Registrar usuario
-- `POST /auth/login` - Iniciar sesión
-
-### Usuarios
-- `GET /users/profile` - Obtener perfil
-- `PATCH /users/:id` - Actualizar usuario
-
-### Categorías
-- `GET /categories` - Listar categorías
-- `POST /categories` - Crear categoría
-- `PATCH /categories/:id` - Actualizar categoría
-- `DELETE /categories/:id` - Eliminar categoría
-
-### Gastos
-- `GET /expenses` - Listar gastos (con filtros)
-- `POST /expenses` - Crear gasto
-- `GET /expenses/:id` - Obtener gasto
-- `PATCH /expenses/:id` - Actualizar gasto
-- `DELETE /expenses/:id` - Eliminar gasto
-- `GET /expenses/stats/monthly/:year/:month` - Estadísticas mensuales
-
-## 🔒 Autenticación
-
-La aplicación usa JWT (JSON Web Tokens) para la autenticación:
-- Los tokens se almacenan en localStorage
-- Se incluyen automáticamente en las peticiones HTTP
-- Expiración automática y redirección al login
-
-## 📱 Características de la UI
-
-### Diseño Responsive
-- Adaptable a móviles, tablets y desktop
-- Navegación lateral colapsible en móviles
-- Componentes optimizados para touch
-
-### Tema Material-UI
-- Paleta de colores consistente
-- Iconografía Material Design
-- Animaciones y transiciones suaves
-
-### Experiencia de Usuario
-- Feedback visual para todas las acciones
-- Confirmaciones para acciones destructivas
-- Estados de carga y manejo de errores
-- Formularios con validación en tiempo real
-
-## 🚀 Despliegue
-
-### Backend
-1. Configurar variables de entorno de producción
-2. Compilar: `npm run build`
-3. Ejecutar: `npm run start:prod`
-
-### Frontend
-1. Compilar: `npm run build`
-2. Servir archivos estáticos desde `dist/`
-
-
+La aplicación utiliza SQLite como su base de datos, con el archivo de base de datos ubicado en `backend/expenses.db`.
