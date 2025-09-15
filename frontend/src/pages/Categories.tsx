@@ -17,6 +17,7 @@ import {
   useTheme,
   useMediaQuery,
   Stack,
+  Snackbar,
 } from '@mui/material';
 import {
   Add,
@@ -37,6 +38,11 @@ const Categories: React.FC = () => {
   const [error, setError] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [categoryToDeleteId, setCategoryToDeleteId] = useState<number | null>(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error' | 'info' | 'warning'>('success');
   const [formData, setFormData] = useState<CreateCategoryRequest>({
     name: '',
     description: '',
@@ -89,29 +95,59 @@ const Categories: React.FC = () => {
     setEditingCategory(null);
   };
 
+  const handleOpenConfirmDialog = (id: number) => {
+    setCategoryToDeleteId(id);
+    setOpenConfirmDialog(true);
+  };
+
+  const handleCloseConfirmDialog = () => {
+    setOpenConfirmDialog(false);
+    setCategoryToDeleteId(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (categoryToDeleteId) {
+      try {
+        await categoriesService.delete(categoryToDeleteId);
+        fetchCategories();
+        setSnackbarMessage('Categoría eliminada correctamente');
+        setSnackbarSeverity('success');
+        setSnackbarOpen(true);
+      } catch {
+        setError('Error al eliminar la categoría');
+        setSnackbarMessage('Error al eliminar la categoría');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
+      } finally {
+        handleCloseConfirmDialog();
+      }
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       if (editingCategory) {
         await categoriesService.update(editingCategory.id, formData);
+        setSnackbarMessage('Categoría actualizada correctamente');
+        setSnackbarSeverity('success');
       } else {
         await categoriesService.create(formData);
+        setSnackbarMessage('Categoría creada correctamente');
+        setSnackbarSeverity('success');
       }
       handleCloseDialog();
       fetchCategories();
+      setSnackbarOpen(true);
     } catch {
       setError('Error al guardar la categoría');
+      setSnackbarMessage('Error al guardar la categoría');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (window.confirm('¿Estás seguro de que quieres eliminar esta categoría?')) {
-      try {
-        await categoriesService.delete(id);
-        fetchCategories();
-      } catch {
-        setError('Error al eliminar la categoría');
-      }
-    }
+    handleOpenConfirmDialog(id);
   };
 
   if (loading) {
@@ -398,6 +434,40 @@ const Categories: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Dialogo de confirmación de eliminación */}
+      <Dialog
+        open={openConfirmDialog}
+        onClose={handleCloseConfirmDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Confirmar Eliminación"}
+        </DialogTitle>
+        <DialogContent>
+          <Typography>
+            ¿Estás seguro de que quieres eliminar esta categoría? Esta acción no se puede deshacer.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseConfirmDialog}>Cancelar</Button>
+          <Button onClick={handleConfirmDelete} color="error" variant="contained" autoFocus>
+            Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
