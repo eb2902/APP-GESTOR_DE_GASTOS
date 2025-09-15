@@ -446,11 +446,17 @@ const Expenses: React.FC = () => {
             <TextField
               margin="dense"
               label="Monto"
-              type="number"
+              type="text"
               fullWidth
               variant="outlined"
-              value={formData.amount}
-              onChange={(e) => setFormData({ ...formData, amount: Number(e.target.value) })}
+              value={formData.amount === 0 && editingExpense === null ? '' : formData.amount}
+              onChange={(e) => {
+                const value = e.target.value;
+                // Allow empty string or valid numbers
+                if (value === '' || /^\d*\.?\d*$/.test(value)) {
+                  setFormData({ ...formData, amount: value === '' ? 0 : Number(value) });
+                }
+              }}
               sx={{ 
                 mb: 2,
                 '& .MuiInputBase-input': {
