@@ -49,6 +49,8 @@ const Expenses: React.FC = () => {
   const [error, setError] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [expenseToDeleteId, setExpenseToDeleteId] = useState<number | null>(null);
   const [formData, setFormData] = useState<CreateExpenseRequest>({
     title: '',
     description: '',
@@ -111,6 +113,29 @@ const Expenses: React.FC = () => {
     setEditingExpense(null);
   };
 
+  const handleOpenConfirmDialog = (id: number) => {
+    setExpenseToDeleteId(id);
+    setOpenConfirmDialog(true);
+  };
+
+  const handleCloseConfirmDialog = () => {
+    setOpenConfirmDialog(false);
+    setExpenseToDeleteId(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (expenseToDeleteId) {
+      try {
+        await expensesService.delete(expenseToDeleteId);
+        fetchExpenses();
+      } catch {
+        setError('Error al eliminar el gasto');
+      } finally {
+        handleCloseConfirmDialog();
+      }
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       if (editingExpense) {
@@ -126,14 +151,7 @@ const Expenses: React.FC = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (window.confirm('¿Estás seguro de que quieres eliminar este gasto?')) {
-      try {
-        await expensesService.delete(id);
-        fetchExpenses();
-      } catch {
-        setError('Error al eliminar el gasto');
-      }
-    }
+    handleOpenConfirmDialog(id);
   };
 
   const formatCurrency = (amount: number) => {
@@ -495,6 +513,29 @@ const Expenses: React.FC = () => {
               sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
             >
               {editingExpense ? 'Actualizar' : 'Crear'}
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Dialogo de confirmación de eliminación */}
+        <Dialog
+          open={openConfirmDialog}
+          onClose={handleCloseConfirmDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"Confirmar Eliminación"}
+          </DialogTitle>
+          <DialogContent>
+            <Typography>
+              ¿Estás seguro de que quieres eliminar este gasto? Esta acción no se puede deshacer.
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseConfirmDialog}>Cancelar</Button>
+            <Button onClick={handleConfirmDelete} color="error" variant="contained" autoFocus>
+              Eliminar
             </Button>
           </DialogActions>
         </Dialog>
