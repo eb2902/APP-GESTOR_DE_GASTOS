@@ -139,7 +139,7 @@ const Expenses: React.FC = () => {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
-      currency: 'EUR',
+      currency: 'ARS',
     }).format(amount);
   };
 
