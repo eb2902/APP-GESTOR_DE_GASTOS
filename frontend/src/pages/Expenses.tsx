@@ -25,6 +25,7 @@ import {
   useTheme,
   useMediaQuery,
   Stack,
+  Snackbar,
 } from '@mui/material';
 import {
   Add,
@@ -51,6 +52,9 @@ const Expenses: React.FC = () => {
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
   const [expenseToDeleteId, setExpenseToDeleteId] = useState<number | null>(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error' | 'info' | 'warning'>('success');
   const [formData, setFormData] = useState<CreateExpenseRequest>({
     title: '',
     description: '',
@@ -128,8 +132,14 @@ const Expenses: React.FC = () => {
       try {
         await expensesService.delete(expenseToDeleteId);
         fetchExpenses();
+        setSnackbarMessage('Gasto eliminado correctamente');
+        setSnackbarSeverity('success');
+        setSnackbarOpen(true);
       } catch {
         setError('Error al eliminar el gasto');
+        setSnackbarMessage('Error al eliminar el gasto');
+        setSnackbarSeverity('error');
+        setSnackbarOpen(true);
       } finally {
         handleCloseConfirmDialog();
       }
@@ -140,13 +150,21 @@ const Expenses: React.FC = () => {
     try {
       if (editingExpense) {
         await expensesService.update(editingExpense.id, formData);
+        setSnackbarMessage('Gasto actualizado correctamente');
+        setSnackbarSeverity('success');
       } else {
         await expensesService.create(formData);
+        setSnackbarMessage('Gasto creado correctamente');
+        setSnackbarSeverity('success');
       }
       handleCloseDialog();
       fetchExpenses();
+      setSnackbarOpen(true);
     } catch {
       setError('Error al guardar el gasto');
+      setSnackbarMessage('Error al guardar el gasto');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
     }
   };
 
@@ -260,292 +278,304 @@ const Expenses: React.FC = () => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Box>
-        <Stack 
-          direction={{ xs: 'column', sm: 'row' }} 
-          justifyContent="space-between" 
-          alignItems={{ xs: 'stretch', sm: 'center' }} 
-          spacing={2}
-          mb={3}
-        >
-          <Typography 
-            variant="h4" 
-            sx={{ 
-              fontSize: { xs: '1.5rem', sm: '2rem', md: '2.125rem' },
-              textAlign: { xs: 'center', sm: 'left' }
-            }}
+      <React.Fragment>
+        <Box>
+          <Stack 
+            direction={{ xs: 'column', sm: 'row' }} 
+            justifyContent="space-between" 
+            alignItems={{ xs: 'stretch', sm: 'center' }} 
+            spacing={2}
+            mb={3}
           >
-            Gastos
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={!isSmallMobile && <Add />}
-            onClick={() => handleOpenDialog()}
-            fullWidth={isMobile}
-            sx={{ 
-              minWidth: { xs: 'auto', sm: 'fit-content' },
-              fontSize: { xs: '0.875rem', sm: '1rem' }
-            }}
-          >
-            {isSmallMobile ? <Add /> : 'Nuevo Gasto'}
-          </Button>
-        </Stack>
+            <Typography 
+              variant="h4" 
+              sx={{ 
+                fontSize: { xs: '1.5rem', sm: '2rem', md: '2.125rem' },
+                textAlign: { xs: 'center', sm: 'left' }
+              }}
+            >
+              Gastos
+            </Typography>
+            <Button
+              variant="contained"
+              startIcon={!isSmallMobile && <Add />}
+              onClick={() => handleOpenDialog()}
+              fullWidth={isMobile}
+              sx={{ 
+                minWidth: { xs: 'auto', sm: 'fit-content' },
+                fontSize: { xs: '0.875rem', sm: '1rem' }
+              }}
+            >
+              {isSmallMobile ? <Add /> : 'Nuevo Gasto'}
+            </Button>
+          </Stack>
 
-        {error && (
-          <Alert severity="error" sx={{ mb: 2, fontSize: { xs: '0.875rem', sm: '1rem' } }}>
-            {error}
-          </Alert>
-        )}
+          {error && (
+            <Alert severity="error" sx={{ mb: 2, fontSize: { xs: '0.875rem', sm: '1rem' } }}>
+              {error}
+            </Alert>
+          )}
 
-        {/* Mobile view */}
-        {isMobile ? (
-          <Box>
-            {expenses.length === 0 ? (
-              <Card>
-                <CardContent sx={{ textAlign: 'center', py: 4 }}>
-                  <Typography color="textSecondary">
-                    No hay gastos registrados
-                  </Typography>
-                </CardContent>
-              </Card>
-            ) : (
-              expenses.map((expense) => (
-                <ExpenseCard key={expense.id} expense={expense} />
-              ))
-            )}
-          </Box>
-        ) : (
-          /* Desktop table view */
-          <Card>
-            <CardContent>
-              <TableContainer component={Paper}>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Título</TableCell>
-                      <TableCell>Categoría</TableCell>
-                      <TableCell>Fecha</TableCell>
-                      <TableCell align="right">Monto</TableCell>
-                      <TableCell align="center">Acciones</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {expenses.length === 0 ? (
+          {/* Mobile view */}
+          {isMobile ? (
+            <Box>
+              {expenses.length === 0 ? (
+                <Card>
+                  <CardContent sx={{ textAlign: 'center', py: 4 }}>
+                    <Typography color="textSecondary">
+                      No hay gastos registrados
+                    </Typography>
+                  </CardContent>
+                </Card>
+              ) : (
+                expenses.map((expense) => (
+                  <ExpenseCard key={expense.id} expense={expense} />
+                ))
+              )}
+            </Box>
+          ) : (
+            /* Desktop table view */
+            <Card>
+              <CardContent>
+                <TableContainer component={Paper}>
+                  <Table>
+                    <TableHead>
                       <TableRow>
-                        <TableCell colSpan={5} align="center">
-                          No hay gastos registrados
-                        </TableCell>
+                        <TableCell>Título</TableCell>
+                        <TableCell>Categoría</TableCell>
+                        <TableCell>Fecha</TableCell>
+                        <TableCell align="right">Monto</TableCell>
+                        <TableCell align="center">Acciones</TableCell>
                       </TableRow>
-                    ) : (
-                      expenses.map((expense) => (
-                        <TableRow key={expense.id}>
-                          <TableCell>
-                            <Box>
-                              <Typography variant="subtitle2">
-                                {expense.title}
-                              </Typography>
-                              {expense.description && (
-                                <Typography variant="body2" color="textSecondary">
-                                  {expense.description}
-                                </Typography>
-                              )}
-                            </Box>
-                          </TableCell>
-                          <TableCell>
-                            {expense.category && (
-                              <Chip
-                                label={expense.category.name}
-                                size="small"
-                                style={{ backgroundColor: expense.category.color, color: 'white' }}
-                              />
-                            )}
-                          </TableCell>
-                          <TableCell>{formatDate(expense.date)}</TableCell>
-                          <TableCell align="right">
-                            <Typography variant="h6" color="primary">
-                              {formatCurrency(Number(expense.amount))}
-                            </Typography>
-                          </TableCell>
-                          <TableCell align="center">
-                            <IconButton
-                              size="small"
-                              onClick={() => handleOpenDialog(expense)}
-                            >
-                              <Edit />
-                            </IconButton>
-                            <IconButton
-                              size="small"
-                              color="error"
-                              onClick={() => handleDelete(expense.id)}
-                            >
-                              <Delete />
-                            </IconButton>
+                    </TableHead>
+                    <TableBody>
+                      {expenses.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={5} align="center">
+                            No hay gastos registrados
                           </TableCell>
                         </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </CardContent>
-          </Card>
-        )}
+                      ) : (
+                        expenses.map((expense) => (
+                          <TableRow key={expense.id}>
+                            <TableCell>
+                              <Box>
+                                <Typography variant="subtitle2">
+                                  {expense.title}
+                                </Typography>
+                                {expense.description && (
+                                  <Typography variant="body2" color="textSecondary">
+                                    {expense.description}
+                                  </Typography>
+                                )}
+                              </Box>
+                            </TableCell>
+                            <TableCell>
+                              {expense.category && (
+                                <Chip
+                                  label={expense.category.name}
+                                  size="small"
+                                  style={{ backgroundColor: expense.category.color, color: 'white' }}
+                                />
+                              )}
+                            </TableCell>
+                            <TableCell>{formatDate(expense.date)}</TableCell>
+                            <TableCell align="right">
+                              <Typography variant="h6" color="primary">
+                                {formatCurrency(Number(expense.amount))}
+                              </Typography>
+                            </TableCell>
+                            <TableCell align="center">
+                              <IconButton
+                                size="small"
+                                onClick={() => handleOpenDialog(expense)}
+                              >
+                                <Edit />
+                              </IconButton>
+                              <IconButton
+                                size="small"
+                                color="error"
+                                onClick={() => handleDelete(expense.id)}
+                              >
+                                <Delete />
+                              </IconButton>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </CardContent>
+            </Card>
+          )}
 
-        {/* Dialog para crear/editar gasto */}
-        <Dialog 
-          open={openDialog} 
-          onClose={handleCloseDialog} 
-          maxWidth="sm" 
-          fullWidth
-          fullScreen={isSmallMobile}
-          PaperProps={{
-            sx: {
-              m: { xs: 0, sm: 2 },
-              maxHeight: { xs: '100vh', sm: '90vh' }
-            }
-          }}
-        >
-          <DialogTitle sx={{ 
-            fontSize: { xs: '1.25rem', sm: '1.5rem' },
-            pb: { xs: 1, sm: 2 }
-          }}>
-            {editingExpense ? 'Editar Gasto' : 'Nuevo Gasto'}
-          </DialogTitle>
-          <DialogContent sx={{ px: { xs: 2, sm: 3 } }}>
-            <TextField
-              autoFocus
-              margin="dense"
-              label="Título"
-              fullWidth
-              variant="outlined"
-              value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              sx={{ 
-                mb: 2,
-                '& .MuiInputBase-input': {
-                  fontSize: { xs: '1rem', sm: '1rem' }
-                }
-              }}
-            />
-            <TextField
-              margin="dense"
-              label="Descripción"
-              fullWidth
-              variant="outlined"
-              multiline
-              rows={isSmallMobile ? 2 : 3}
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              sx={{ 
-                mb: 2,
-                '& .MuiInputBase-input': {
-                  fontSize: { xs: '1rem', sm: '1rem' }
-                }
-              }}
-            />
-            <TextField
-              margin="dense"
-              label="Monto"
-              type="text"
-              fullWidth
-              variant="outlined"
-              value={formData.amount === 0 && editingExpense === null ? '' : formData.amount}
-              onChange={(e) => {
-                const value = e.target.value;
-                // Allow empty string or valid numbers
-                if (value === '' || /^\d*\.?\d*$/.test(value)) {
-                  setFormData({ ...formData, amount: value === '' ? 0 : Number(value) });
-                }
-              }}
-              sx={{ 
-                mb: 2,
-                '& .MuiInputBase-input': {
-                  fontSize: { xs: '1rem', sm: '1rem' }
-                }
-              }}
-            />
-            <DatePicker
-              label="Fecha"
-              value={dayjs(formData.date)}
-              onChange={(newValue) => {
-                if (newValue) {
-                  setFormData({ ...formData, date: newValue.format('YYYY-MM-DD') });
-                }
-              }}
-              sx={{ 
-                mb: 2, 
-                width: '100%',
-                '& .MuiInputBase-input': {
-                  fontSize: { xs: '1rem', sm: '1rem' }
-                }
-              }}
-            />
-            <TextField
-              select
-              margin="dense"
-              label="Categoría"
-              fullWidth
-              variant="outlined"
-              value={formData.categoryId || ''}
-              onChange={(e) => setFormData({ ...formData, categoryId: Number(e.target.value) || undefined })}
-              sx={{
-                '& .MuiInputBase-input': {
-                  fontSize: { xs: '1rem', sm: '1rem' }
-                }
-              }}
-            >
-              <MenuItem value="">Sin categoría</MenuItem>
-              {categories.map((category) => (
-                <MenuItem key={category.id} value={category.id}>
-                  {category.name}
-                </MenuItem>
-              ))}
-            </TextField>
-          </DialogContent>
-          <DialogActions sx={{ 
-            px: { xs: 2, sm: 3 }, 
-            pb: { xs: 2, sm: 3 },
-            gap: { xs: 1, sm: 0 }
-          }}>
-            <Button 
-              onClick={handleCloseDialog}
-              sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
-            >
-              Cancelar
-            </Button>
-            <Button 
-              onClick={handleSubmit} 
-              variant="contained"
-              sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
-            >
-              {editingExpense ? 'Actualizar' : 'Crear'}
-            </Button>
-          </DialogActions>
-        </Dialog>
+          {/* Dialog para crear/editar gasto */}
+          <Dialog 
+            open={openDialog} 
+            onClose={handleCloseDialog} 
+            maxWidth="sm" 
+            fullWidth
+            fullScreen={isSmallMobile}
+            PaperProps={{
+              sx: {
+                m: { xs: 0, sm: 2 },
+                maxHeight: { xs: '100vh', sm: '90vh' }
+              }
+            }}
+          >
+            <DialogTitle sx={{ 
+              fontSize: { xs: '1.25rem', sm: '1.5rem' },
+              pb: { xs: 1, sm: 2 }
+            }}>
+              {editingExpense ? 'Editar Gasto' : 'Nuevo Gasto'}
+            </DialogTitle>
+            <DialogContent sx={{ px: { xs: 2, sm: 3 } }}>
+              <TextField
+                autoFocus
+                margin="dense"
+                label="Título"
+                fullWidth
+                variant="outlined"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                sx={{ 
+                  mb: 2,
+                  '& .MuiInputBase-input': {
+                    fontSize: { xs: '1rem', sm: '1rem' }
+                  }
+                }}
+              />
+              <TextField
+                margin="dense"
+                label="Descripción"
+                fullWidth
+                variant="outlined"
+                multiline
+                rows={isSmallMobile ? 2 : 3}
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                sx={{ 
+                  mb: 2,
+                  '& .MuiInputBase-input': {
+                    fontSize: { xs: '1rem', sm: '1rem' }
+                  }
+                }}
+              />
+              <TextField
+                margin="dense"
+                label="Monto"
+                type="text"
+                fullWidth
+                variant="outlined"
+                value={formData.amount === 0 && editingExpense === null ? '' : formData.amount}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Allow empty string or valid numbers
+                  if (value === '' || /^\d*\.?\d*$/.test(value)) {
+                    setFormData({ ...formData, amount: value === '' ? 0 : Number(value) });
+                  }
+                }}
+                sx={{ 
+                  mb: 2,
+                  '& .MuiInputBase-input': {
+                    fontSize: { xs: '1rem', sm: '1rem' }
+                  }
+                }}
+              />
+              <DatePicker
+                label="Fecha"
+                value={dayjs(formData.date)}
+                onChange={(newValue) => {
+                  if (newValue) {
+                    setFormData({ ...formData, date: newValue.format('YYYY-MM-DD') });
+                  }
+                }}
+                sx={{ 
+                  mb: 2, 
+                  width: '100%',
+                  '& .MuiInputBase-input': {
+                    fontSize: { xs: '1rem', sm: '1rem' }
+                  }
+                }}
+              />
+              <TextField
+                select
+                margin="dense"
+                label="Categoría"
+                fullWidth
+                variant="outlined"
+                value={formData.categoryId || ''}
+                onChange={(e) => setFormData({ ...formData, categoryId: Number(e.target.value) || undefined })}
+                sx={{
+                  '& .MuiInputBase-input': {
+                    fontSize: { xs: '1rem', sm: '1rem' }
+                  }
+                }}
+              >
+                <MenuItem value="">Sin categoría</MenuItem>
+                {categories.map((category) => (
+                  <MenuItem key={category.id} value={category.id}>
+                    {category.name}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </DialogContent>
+            <DialogActions sx={{ 
+              px: { xs: 2, sm: 3 }, 
+              pb: { xs: 2, sm: 3 },
+              gap: { xs: 1, sm: 0 }
+            }}>
+              <Button 
+                onClick={handleCloseDialog}
+                sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+              >
+                Cancelar
+              </Button>
+              <Button 
+                onClick={handleSubmit} 
+                variant="contained"
+                sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+              >
+                {editingExpense ? 'Actualizar' : 'Crear'}
+              </Button>
+            </DialogActions>
+          </Dialog>
 
-        {/* Dialogo de confirmación de eliminación */}
-        <Dialog
-          open={openConfirmDialog}
-          onClose={handleCloseConfirmDialog}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
+          {/* Dialogo de confirmación de eliminación */}
+          <Dialog
+            open={openConfirmDialog}
+            onClose={handleCloseConfirmDialog}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {"Confirmar Eliminación"}
+            </DialogTitle>
+            <DialogContent>
+              <Typography>
+                ¿Estás seguro de que quieres eliminar este gasto? Esta acción no se puede deshacer.
+              </Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseConfirmDialog}>Cancelar</Button>
+              <Button onClick={handleConfirmDelete} color="error" variant="contained" autoFocus>
+                Eliminar
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </Box>
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={6000}
+          onClose={() => setSnackbarOpen(false)}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
         >
-          <DialogTitle id="alert-dialog-title">
-            {"Confirmar Eliminación"}
-          </DialogTitle>
-          <DialogContent>
-            <Typography>
-              ¿Estás seguro de que quieres eliminar este gasto? Esta acción no se puede deshacer.
-            </Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseConfirmDialog}>Cancelar</Button>
-            <Button onClick={handleConfirmDelete} color="error" variant="contained" autoFocus>
-              Eliminar
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Box>
+          <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
+      </React.Fragment>
     </LocalizationProvider>
   );
 };
