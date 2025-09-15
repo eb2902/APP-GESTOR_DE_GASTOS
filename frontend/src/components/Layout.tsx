@@ -57,6 +57,7 @@ const Layout: React.FC = () => {
   const menuItems = [
     { text: 'Dashboard', icon: <Dashboard />, path: '/dashboard' },
     { text: 'Gastos', icon: <Receipt />, path: '/expenses' },
+    { text: 'Ingresos', icon: <Receipt />, path: '/incomes' }, // Added Incomes
     { text: 'Categorías', icon: <Category />, path: '/categories' },
   ];
 
