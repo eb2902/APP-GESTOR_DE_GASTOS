@@ -566,15 +566,15 @@ const Expenses: React.FC = () => {
           </Dialog>
         </Box>
         <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={6000}
-          onClose={() => setSnackbarOpen(false)}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-        >
-          <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
-            {snackbarMessage}
-          </Alert>
-        </Snackbar>
+      open={snackbarOpen}
+      autoHideDuration={6000}
+      onClose={() => setSnackbarOpen(false)}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+    >
+      <Alert onClose={() => setSnackbarOpen(false)} severity={snackbarSeverity} sx={{ width: '100%' }}>
+        {snackbarMessage}
+      </Alert>
+    </Snackbar>
       </React.Fragment>
     </LocalizationProvider>
   );
