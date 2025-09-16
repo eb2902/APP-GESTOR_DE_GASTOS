@@ -99,6 +99,36 @@ export interface Budget {
   updatedAt: string;
 }
 
+export enum RecurringFrequency {
+  DAILY = 'daily',
+  WEEKLY = 'weekly',
+  MONTHLY = 'monthly',
+  YEARLY = 'yearly',
+}
+
+export enum TransactionType {
+  EXPENSE = 'expense',
+  INCOME = 'income',
+}
+
+export interface RecurringTransaction {
+  id: number;
+  title: string;
+  description?: string;
+  amount: number;
+  frequency: RecurringFrequency;
+  type: TransactionType;
+  startDate: string;
+  endDate?: string;
+  isActive: boolean;
+  userId: number;
+  categoryId?: number;
+  category?: Category;
+  lastGenerated?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface LoginRequest {
   email: string;
   password: string;
@@ -145,6 +175,18 @@ export interface CreateBudgetRequest {
   period: string;
   year: number;
   month?: number;
+  categoryId?: number;
+}
+
+export interface CreateRecurringTransactionRequest {
+  title: string;
+  description?: string;
+  amount: number;
+  frequency: RecurringFrequency;
+  type: TransactionType;
+  startDate: string;
+  endDate?: string;
+  isActive?: boolean;
   categoryId?: number;
 }
 
@@ -288,5 +330,36 @@ export const budgetsService = {
 
   delete: async (id: number): Promise<void> => {
     await api.delete(`/budgets/${id}`);
+  },
+};
+
+// Servicios de transacciones recurrentes
+export const recurringTransactionsService = {
+  getAll: async (): Promise<RecurringTransaction[]> => {
+    const response = await api.get('/recurring-transactions');
+    return response.data;
+  },
+
+  getById: async (id: number): Promise<RecurringTransaction> => {
+    const response = await api.get(`/recurring-transactions/${id}`);
+    return response.data;
+  },
+
+  create: async (data: CreateRecurringTransactionRequest): Promise<RecurringTransaction> => {
+    const response = await api.post('/recurring-transactions', data);
+    return response.data;
+  },
+
+  update: async (id: number, data: Partial<CreateRecurringTransactionRequest>): Promise<RecurringTransaction> => {
+    const response = await api.patch(`/recurring-transactions/${id}`, data);
+    return response.data;
+  },
+
+  delete: async (id: number): Promise<void> => {
+    await api.delete(`/recurring-transactions/${id}`);
+  },
+
+  generateTransactions: async (): Promise<void> => {
+    await api.post('/recurring-transactions/generate');
   },
 };

@@ -25,6 +25,7 @@ import {
   AccountCircle,
   Logout,
   AccountBalanceWallet,
+  Repeat,
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -59,6 +60,7 @@ const Layout: React.FC = () => {
     { text: 'Dashboard', icon: <Dashboard />, path: '/dashboard' },
     { text: 'Gastos', icon: <Receipt />, path: '/expenses' },
     { text: 'Ingresos', icon: <Receipt />, path: '/incomes' }, // Added Incomes
+    { text: 'Transacciones Recurrentes', icon: <Repeat />, path: '/recurring-transactions' },
     { text: 'Presupuestos', icon: <AccountBalanceWallet />, path: '/budgets' },
     { text: 'Categorías', icon: <Category />, path: '/categories' },
   ];

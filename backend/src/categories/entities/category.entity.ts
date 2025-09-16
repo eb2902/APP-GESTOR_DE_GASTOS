@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, Up
 import { Expense } from '../../expenses/entities/expense.entity';
 import { Income } from '../../incomes/entities/income.entity';
 import { Budget } from '../../budgets/entities/budget.entity';
+import { RecurringTransaction } from '../../recurring-transactions/entities/recurring-transaction.entity';
 @Entity('categories')
 export class Category {
   @PrimaryGeneratedColumn()
@@ -24,6 +25,9 @@ export class Category {
 
   @OneToMany(() => Budget, budget => budget.category)
   budgets: Budget[];
+
+  @OneToMany(() => RecurringTransaction, recurringTransaction => recurringTransaction.category)
+  recurringTransactions: RecurringTransaction[];
 
   @CreateDateColumn()
   createdAt: Date;

@@ -10,6 +10,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Expenses from './pages/Expenses';
 import Incomes from './pages/Incomes'; // Import Incomes page
+import RecurringTransactions from './pages/RecurringTransactions';
 import Categories from './pages/Categories';
 import Budgets from './pages/Budgets';
 
@@ -59,6 +60,7 @@ const AppRoutes: React.FC = () => {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="expenses" element={<Expenses />} />
         <Route path="incomes" element={<Incomes />} /> {/* Add Incomes route */}
+        <Route path="recurring-transactions" element={<RecurringTransactions />} />
         <Route path="categories" element={<Categories />} />
         <Route path="budgets" element={<Budgets />} />
       </Route>
