@@ -84,6 +84,21 @@ export interface Income {
   updatedAt: string;
 }
 
+export interface Budget {
+  id: number;
+  title: string;
+  description?: string;
+  amount: number;
+  period: string;
+  year: number;
+  month?: number;
+  userId: number;
+  categoryId?: number;
+  category?: Category;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface LoginRequest {
   email: string;
   password: string;
@@ -121,6 +136,16 @@ export interface CreateCategoryRequest {
   name: string;
   description?: string;
   color?: string;
+}
+
+export interface CreateBudgetRequest {
+  title: string;
+  description?: string;
+  amount: number;
+  period: string;
+  year: number;
+  month?: number;
+  categoryId?: number;
 }
 
 // Servicios de autenticación
@@ -232,5 +257,36 @@ export const incomesService = {
   getMonthlyTotal: async (year: number, month: number): Promise<number> => {
     const response = await api.get(`/incomes/stats/monthly/${year}/${month}`);
     return response.data;
+  },
+};
+
+// Servicios de presupuestos
+export const budgetsService = {
+  getAll: async (params?: {
+    year?: number;
+    month?: number;
+    categoryId?: number;
+  }): Promise<Budget[]> => {
+    const response = await api.get('/budgets', { params });
+    return response.data;
+  },
+
+  getById: async (id: number): Promise<Budget> => {
+    const response = await api.get(`/budgets/${id}`);
+    return response.data;
+  },
+
+  create: async (data: CreateBudgetRequest): Promise<Budget> => {
+    const response = await api.post('/budgets', data);
+    return response.data;
+  },
+
+  update: async (id: number, data: Partial<CreateBudgetRequest>): Promise<Budget> => {
+    const response = await api.patch(`/budgets/${id}`, data);
+    return response.data;
+  },
+
+  delete: async (id: number): Promise<void> => {
+    await api.delete(`/budgets/${id}`);
   },
 };

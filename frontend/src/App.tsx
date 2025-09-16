@@ -11,6 +11,7 @@ import Dashboard from './pages/Dashboard';
 import Expenses from './pages/Expenses';
 import Incomes from './pages/Incomes'; // Import Incomes page
 import Categories from './pages/Categories';
+import Budgets from './pages/Budgets';
 
 const theme = createTheme({
   palette: {
@@ -59,6 +60,7 @@ const AppRoutes: React.FC = () => {
         <Route path="expenses" element={<Expenses />} />
         <Route path="incomes" element={<Incomes />} /> {/* Add Incomes route */}
         <Route path="categories" element={<Categories />} />
+        <Route path="budgets" element={<Budgets />} />
       </Route>
       <Route path="*" element={<Navigate to={user ? "/dashboard" : "/login"} replace />} />
     </Routes>

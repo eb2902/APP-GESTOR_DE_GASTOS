@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { Expense } from '../../expenses/entities/expense.entity';
 import { Income } from '../../incomes/entities/income.entity';
+import { Budget } from '../../budgets/entities/budget.entity';
 @Entity('categories')
 export class Category {
   @PrimaryGeneratedColumn()
@@ -20,6 +21,9 @@ export class Category {
 
   @OneToMany(() => Income, income => income.category)
   incomes: Income[];
+
+  @OneToMany(() => Budget, budget => budget.category)
+  budgets: Budget[];
 
   @CreateDateColumn()
   createdAt: Date;

@@ -24,6 +24,7 @@ import {
   Category,
   AccountCircle,
   Logout,
+  AccountBalanceWallet,
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -58,6 +59,7 @@ const Layout: React.FC = () => {
     { text: 'Dashboard', icon: <Dashboard />, path: '/dashboard' },
     { text: 'Gastos', icon: <Receipt />, path: '/expenses' },
     { text: 'Ingresos', icon: <Receipt />, path: '/incomes' }, // Added Incomes
+    { text: 'Presupuestos', icon: <AccountBalanceWallet />, path: '/budgets' },
     { text: 'Categorías', icon: <Category />, path: '/categories' },
   ];
 

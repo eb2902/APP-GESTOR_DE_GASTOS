@@ -11,7 +11,9 @@ import { User } from './users/entities/user.entity';
 import { Expense } from './expenses/entities/expense.entity';
 import { Category } from './categories/entities/category.entity';
 import { Income } from './incomes/entities/income.entity';
+import { Budget } from './budgets/entities/budget.entity';
 import { IncomesModule } from './incomes/incomes.module';
+import { BudgetsModule } from './budgets/budgets.module';
 
 @Module({
   imports: [
@@ -21,7 +23,7 @@ import { IncomesModule } from './incomes/incomes.module';
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: 'expenses.db',
-      entities: [User, Expense, Category, Income],
+      entities: [User, Expense, Category, Income, Budget],
       synchronize: true, // Solo para desarrollo
       logging: true,
     }),
@@ -30,6 +32,7 @@ import { IncomesModule } from './incomes/incomes.module';
     ExpensesModule,
     CategoriesModule,
     IncomesModule,
+    BudgetsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
